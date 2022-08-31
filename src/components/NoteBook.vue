@@ -2,7 +2,7 @@
  * @Author: hjhj111 2268716068@qq.com
  * @Date: 2022-08-30 12:15:37
  * @LastEditors: hjhj111 2268716068@qq.com
- * @LastEditTime: 2022-08-30 22:32:02
+ * @LastEditTime: 2022-08-31 10:55:45
  * @FilePath: \note_book\src\components\HelloWorld.vue
  * @Description: 这是一个简单基于vue的在线备忘录,结合c++网络库Rester，内存数据库redis使用
 -->
@@ -12,7 +12,7 @@
     <ol style="list-style-type:none">
       <li v-for="note in notes" :key="note.text">
         <h2>{{note.text}}</h2>
-        <button>完成待办</button>
+        <button @click="deleteNote(note)">完成待办</button>
       </li>
     </ol>
     <!-- <form action={{this.adress}} method="post"> -->
@@ -70,7 +70,7 @@ export default {
         method:"Post",
         url:self.address,
         headers:{
-          'Content-Type': 'text/plain'//application/json会乱码
+          'Content-Type': 'text/plain'//application/json
         },
         data:{text:document.getElementById("form").value}
         //data:"{\"text\":\"更加发奋建安费\"}"
@@ -85,13 +85,27 @@ export default {
         }
       })
       
-    }
+    },
     
+    deleteNote: function(note){
+      var self=this
+      axios({
+        method:"Delete",
+        url:self.address,
+        data:note
+      }).then(function(res){
+        if(res.status==201){
+          //update
+          self.getNotes()
+          alert("删除成功")
+        }
+        else{
+          alert("删除失败")
+        }
+      })
+    }
   }
 }
-
-
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
